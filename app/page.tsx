@@ -90,7 +90,7 @@ export default function HomePage() {
           </div>
 
           <div className="hero-stats">
-            {[["★", "10+", "ปีประสบการณ์"], ["✓", "50+", "ลูกค้าพึงพอใจ"], ["◆", "50+", "โครงการสำเร็จ"]].map(([icon, value, label]) => (
+            {[["★", "6+", "ปีประสบการณ์"], ["✓", "50+", "ลูกค้าพึงพอใจ"], ["◆", "50+", "โครงการสำเร็จ"]].map(([icon, value, label]) => (
               <div className="stat" key={label}>
                 <span className="stat-icon">{icon}</span>
                 <span className="stat-val">{value}</span>
