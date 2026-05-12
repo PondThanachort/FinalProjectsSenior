@@ -1,0 +1,30 @@
+Load projects error: Error: connect ECONNREFUSED 127.0.0.1:3306
+    at <unknown> (Error: connect ECONNREFUSED 127.0.0.1:3306)
+    at <unknown> (D:\66105\my-app\.next\server\chunks\[root-of-the-server]__0p2dsef._.js:5:249976)
+    at <unknown> (D:\66105\my-app\.next\server\chunks\[root-of-the-server]__0p2dsef._.js:5:258066)
+    at <unknown> (D:\66105\my-app\.next\server\chunks\[root-of-the-server]__0p2dsef._.js:5:255983)
+    at R._ (D:\66105\my-app\.next\server\chunks\[root-of-the-server]__0p2dsef._.js:5:248172)
+    at R._notifyError (D:\66105\my-app\.next\server\chunks\[root-of-the-server]__0p2dsef._.js:5:239381)
+    at R._handleFatalError (D:\66105\my-app\.next\server\chunks\[root-of-the-server]__0p2dsef._.js:5:238489)
+    at R._handleNetworkError (D:\66105\my-app\.next\server\chunks\[root-of-the-server]__0p2dsef._.js:5:238674) {
+  code: 'ECONNREFUSED',
+  errno: -4078,
+  sql: undefined,
+  sqlState: undefined,
+  sqlMessage: undefined
+}
+Load portfolio images error: Error: connect ECONNREFUSED 127.0.0.1:3306
+    at <unknown> (Error: connect ECONNREFUSED 127.0.0.1:3306)
+    at <unknown> (D:\66105\my-app\.next\server\chunks\[root-of-the-server]__0p2dsef._.js:5:249976)
+    at <unknown> (D:\66105\my-app\.next\server\chunks\[root-of-the-server]__0p2dsef._.js:5:258066)
+    at <unknown> (D:\66105\my-app\.next\server\chunks\[root-of-the-server]__0p2dsef._.js:5:255983)
+    at R._ (D:\66105\my-app\.next\server\chunks\[root-of-the-server]__0p2dsef._.js:5:248172)
+    at R._notifyError (D:\66105\my-app\.next\server\chunks\[root-of-the-server]__0p2dsef._.js:5:239381)
+    at R._handleFatalError (D:\66105\my-app\.next\server\chunks\[root-of-the-server]__0p2dsef._.js:5:238489)
+    at R._handleNetworkError (D:\66105\my-app\.next\server\chunks\[root-of-the-server]__0p2dsef._.js:5:238674) {
+  code: 'ECONNREFUSED',
+  errno: -4078,
+  sql: undefined,
+  sqlState: undefined,
+  sqlMessage: undefined
+}

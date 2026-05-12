@@ -1,0 +1,324 @@
+﻿@import url('https://fonts.googleapis.com/css2?family=Noto+Sans+Thai:wght@300;400;500;600;700&family=Noto+Serif+Thai:wght@300;400;600;700&family=Sarabun:wght@300;400;500;600;700&display=swap');
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html, body { min-height: 100%; }
+body { font-family: 'Sarabun', 'Noto Sans Thai', sans-serif; background: #e8e8e8; color: #000; }
+
+/* ── Screen wrapper ── */
+.screen-wrap { max-width: 1000px; margin: 0 auto; padding: 28px 20px 72px; }
+
+/* ── Breadcrumb ── */
+.bc { display: flex; align-items: center; gap: 8px; font-size: 13px; color: #9ca3af; margin-bottom: 18px; }
+.bc span { color: #d1d5db; }
+.bc a { color: #9ca3af; text-decoration: none; }
+.bc a:hover { color: #374151; }
+.bc strong { color: #111110; }
+
+/* ── Steps ── */
+.steps { display: flex; align-items: center; margin-bottom: 20px; }
+.step  { display: flex; align-items: center; gap: 8px; }
+.step-circle { width: 30px; height: 30px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 13px; font-weight: 700; flex-shrink: 0; }
+.step-circle.done   { background: #52b788; color: #fff; }
+.step-circle.active { background: #111110; color: #fff; }
+.step-circle.todo   { background: #e5e7eb; color: #9ca3af; }
+.step-label { font-size: 13px; font-weight: 600; white-space: nowrap; }
+.step-label.done   { color: #52b788; }
+.step-label.active { color: #111110; }
+.step-label.todo   { color: #9ca3af; }
+.step-line { flex: 1; height: 1px; background: #e5e7eb; margin: 0 10px; min-width: 24px; }
+
+/* ── Toolbar ── */
+.preview-toolbar {
+  background: #fff; border-radius: 12px; padding: 14px 18px;
+  margin-bottom: 18px; display: flex; justify-content: space-between;
+  align-items: center; gap: 10px; border: 1px solid #e5e7eb; flex-wrap: wrap;
+}
+.preview-info { font-size: 13px; color: #6b7280; }
+.preview-info strong { color: #111110; }
+.toolbar-actions { display: flex; gap: 8px; flex-wrap: wrap; }
+
+/* ── Buttons ── */
+.btn { display: inline-flex; align-items: center; gap: 6px; padding: 9px 18px; border-radius: 9px; font-size: 13px; font-weight: 600; cursor: pointer; border: none; font-family: 'Sarabun', sans-serif; transition: all .2s; text-decoration: none; white-space: nowrap; }
+.btn-dark    { background: #111110; color: #fff; }
+.btn-dark:hover { background: #2d2d2d; transform: translateY(-1px); }
+.btn-outline { background: #fff; color: #374151; border: 1.5px solid #d1d5db; }
+.btn-outline:hover { border-color: #374151; }
+.btn-green   { background: #2d6a4f; color: #fff; }
+.btn-green:hover { background: #1b4332; transform: translateY(-1px); }
+
+/* ══════════════════════════════════════════════
+   A4 DOCUMENT — ตาม PDF ต้นฉบับเป๊ะๆ
+   A4 = 210mm × 297mm  →  794px × 1123px @96dpi
+══════════════════════════════════════════════ */
+.doc-shadow {
+  box-shadow: 0 4px 32px rgba(0,0,0,0.22);
+  border-radius: 2px;
+  overflow: hidden;
+  /* จำกัดขนาด A4 */
+  width: 794px;
+  height: 1123px;
+  margin: 0 auto;
+}
+
+.doc {
+  background: #fff;
+  width: 794px;
+  height: 1123px;    /* A4 height */
+  padding: 32px 42px 28px 42px;
+  font-family: 'Sarabun', 'Noto Sans Thai', sans-serif;
+  font-size: 11px;
+  line-height: 1.35;
+  color: #000;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+}
+
+/* ── บรรทัดหัวกระดาษ ── */
+/* โลโก้ + ชื่อบริษัท แถวบน — layout เหมือน PDF */
+.doc-top {
+  display: flex;
+  align-items: flex-start;
+  gap: 14px;
+  margin-bottom: 4px;
+  position: relative;
+  justify-content: center;
+}
+
+/* กล่องโลโก้ placeholder */
+.doc-logo-placeholder {
+  width: 64px;
+  height: 64px; 
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  color: #9ca3af;
+  font-size: 9px;
+  text-align: center;
+  line-height: 1.4;
+  gap: 3px;
+  position: absolute;
+  left: 0;
+  top: 0;
+}
+.doc-logo-placeholder svg { opacity: .45; }
+
+/* ชื่อบริษัทตรงกลางหัวเอกสาร */
+.doc-company-block {
+  width: 100%;
+  padding: 0 76px;
+  text-align: center;
+}
+.doc-company-thai  {
+  font-family: 'Sarabun', 'Noto Sans Thai', sans-serif;
+  font-size: 13.5px;
+  font-weight: 700;
+  color: #000;
+  margin-bottom: 1px;
+}
+.doc-company-eng {
+  font-size: 11.5px;
+  font-weight: 700;
+  letter-spacing: .01em;
+  margin-bottom: 1px;
+}
+.doc-company-addr {
+  font-size: 10px;
+  color: #333;
+  line-height: 1.4;
+}
+
+/* ── ชื่อเอกสาร "ESTIMATE" ตรงกลาง-บน ── */
+.doc-doc-title {
+  text-align: center;
+  font-size: 22px;
+  font-weight: 700;
+  letter-spacing: .14em;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  margin: 6px 0 9px;
+  font-family: 'Sarabun', sans-serif;
+}
+
+/* ── ตารางข้อมูล MESSRS / DATE / PROJECT / SUBJECT ── */
+.doc-info-table {
+  width: 100%;
+  table-layout: fixed;
+  border-collapse: collapse;
+  margin-bottom: 8px;
+  font-size: 10.5px;
+}
+.doc-info-table td {
+  padding: 2px 3px;
+  vertical-align: top;
+}
+.doc-info-label {
+  font-weight: 700;
+  white-space: nowrap;
+  width: 140px;
+  color: #000;
+}
+.doc-info-colon {
+  width: 12px;
+  color: #000;
+}
+.doc-info-value {
+  color: #000;
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+/* NO. / DATE ขวา */
+.doc-info-right {
+  text-align: right;
+  white-space: normal;
+  overflow-wrap: anywhere;
+  font-weight: 600;
+  font-size: 10.5px;
+}
+
+/* ── ตารางรายการ ── */
+.items-tbl {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 10.5px;
+  border: 1px solid #000;
+  margin-bottom: 0;
+}
+.items-tbl th, .items-tbl td {
+  border: 1px solid #000;
+  padding: 4px 6px;
+  vertical-align: top;
+}
+.items-tbl thead th {
+  background: #fff;
+  font-weight: 700;
+  text-align: center;
+  font-size: 10.5px;
+  padding: 5px 5px;
+}
+/* Column widths — เหมือน PDF */
+.th-no    { width: 38px;  text-align: center; }
+.th-desc  { text-align: center; }
+.th-qty   { width: 52px;  text-align: center; }
+.th-unit  { width: 42px;  text-align: center; }
+.th-price { width: 78px;  text-align: center; }
+.th-amt   { width: 82px;  text-align: center; }
+
+.td-no    { text-align: center; color: #333; font-size: 11px; }
+.td-desc  { padding-left: 8px; }
+.td-qty   { text-align: right;  font-variant-numeric: tabular-nums; }
+.td-unit  { text-align: center; }
+.td-price { text-align: right;  font-variant-numeric: tabular-nums; }
+.td-amt   { text-align: right;  font-weight: 700; font-variant-numeric: tabular-nums; }
+
+/* หัวข้อกลุ่มในตาราง (ADDITION WORK) */
+.td-group-header {
+  font-weight: 700;
+  text-decoration: underline;
+  text-underline-offset: 2px;
+  text-align: center;
+  border-top: none;
+  border-left: none;
+  border-right: none;
+  padding: 5px 0 3px;
+  font-size: 12px;
+}
+
+/* แถว padding ให้ครบ A4 */
+.tr-pad td { height: 22px; }
+
+/* ── แถว TOTAL / VAT / GRAND TOTAL ── */
+.tr-total td    { font-weight: 700; padding: 5px 6px; }
+.td-total-label { text-align: center; font-weight: 700; letter-spacing: .04em; border-right: none; }
+.td-total-val   { text-align: right;  font-weight: 700; font-variant-numeric: tabular-nums; }
+.tr-total-grand td { border-top: 2px solid #000; }
+
+/* ── ส่วนล่าง: RECEIVER + MANAGER ── */
+.doc-sign {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-top: 10px;
+  gap: 20px;
+}
+.doc-sign-box {
+  flex: 1;
+  text-align: center;
+}
+.doc-sign-line {
+  width: 100%;
+  border-bottom: 1px solid #555;
+  margin-bottom: 5px;
+  height: 34px;
+}
+.doc-sign-label {
+  font-size: 11px;
+  color: #333;
+  line-height: 1.6;
+}
+.doc-sign-name {
+  font-size: 12px;
+  font-weight: 700;
+  color: #000;
+}
+
+/* ── ส่วน email แถวล่างสุด ── */
+.doc-footer-note {
+  margin-top: auto;
+  padding-top: 7px;
+  text-align: center;
+  font-size: 10.5px;
+  color: #555;
+  border-top: 1px solid #d1d5db;
+}
+
+/* ══════════════════════════════════════════
+   PRINT STYLES — A4 เป๊ะๆ
+══════════════════════════════════════════ */
+@media print {
+  html, body {
+    width: 210mm;
+    height: 297mm;
+    margin: 0;
+    background: #fff !important;
+    overflow: hidden;
+  }
+  .screen-wrap > *:not(.doc-shadow) { display: none !important; }
+  .screen-wrap { padding: 0 !important; margin: 0 !important; max-width: 100% !important; }
+  .doc-shadow  {
+    box-shadow: none !important;
+    width: 210mm !important;
+    height: 297mm !important;
+    border-radius: 0;
+    overflow: hidden !important;
+    page-break-after: avoid;
+    page-break-inside: avoid;
+    break-inside: avoid;
+  }
+  .doc {
+    width: 210mm !important;
+    height: 297mm !important;
+    padding: 8mm 11mm 7mm !important;
+    min-height: unset;
+    overflow: hidden !important;
+    page-break-after: avoid;
+    page-break-inside: avoid;
+    break-inside: avoid;
+  }
+  @page {
+    size: A4 portrait;
+    margin: 0;
+  }
+}
+
+/* ── Responsive (หน้าจอแคบ) ── */
+@media (max-width: 860px) {
+  .doc-shadow, .doc { width: 100% !important; }
+  .doc { padding: 24px 18px; font-size: 11px; }
+  .doc-company-thai  { font-size: 12px; }
+  .items-tbl th, .items-tbl td { padding: 3px 4px; font-size: 10px; }
+  .steps .step-label { display: none; }
+  .screen-wrap { padding: 16px 10px 60px; }
+}
