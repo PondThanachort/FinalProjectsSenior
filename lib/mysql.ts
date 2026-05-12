@@ -6,9 +6,11 @@ const pool = mysql.createPool({
   user: process.env.MYSQL_USER ?? process.env.MYSQLUSER ?? "root",
   password: process.env.MYSQL_PASSWORD ?? process.env.MYSQLPASSWORD ?? "",
   database: process.env.MYSQL_DATABASE ?? process.env.MYSQLDATABASE ?? "66105db",
+  charset: "utf8mb4",
   waitForConnections: true,
   connectionLimit: 5,
   queueLimit: 0,
 });
 
 export default pool;
+
