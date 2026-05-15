@@ -28,7 +28,7 @@ export interface FormErrors {
   role?:       string;
 }
 
-export const PREFIXES = ["นาย","นาง","นางสาว","ดร.","อื่นๆ"];
+export const PREFIXES = ["นาย","นาง","นางสาว","ดร."];
 export const POSITIONS = [
   "สถาปนิก",
   "มัณฑนากร",
