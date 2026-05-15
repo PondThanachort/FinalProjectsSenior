@@ -421,6 +421,12 @@ export default function ProjectsPage() {
                 <span className="delete-proj-name">&quot;{deleteTarget.name}&quot;</span> หรือไม่?
               </p>
               <p style={{fontSize:13,color:"#9ca3af"}}>ข้อมูลทั้งหมดจะถูกลบออกจากระบบ และไม่สามารถกู้คืนได้</p>
+              {globalError && (
+                <div className="global-err" style={{marginTop:18,marginBottom:0,textAlign:"left"}}>
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" style={{flexShrink:0}}><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+                  {globalError}
+                </div>
+              )}
             </div>
             <div className="modal-ft">
               <button className="btn btn-ghost" onClick={closeModal}>ยกเลิก</button>
