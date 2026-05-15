@@ -4,6 +4,7 @@ import path from "path";
 import type { RowDataPacket, ResultSetHeader } from "mysql2";
 import pool from "@/lib/mysql";
 import { getApiSession, requireApiAuth } from "@/lib/api-auth";
+import { runtimeUploadsDir, safeUploadPath } from "@/lib/upload-storage";
 
 type PortfolioImageRow = {
   image_id: number | string;
@@ -30,6 +31,51 @@ function safeFolderName(value: unknown) {
     .replace(/\.+$/g, "")
     .replace(/\s+/g, " ")
     .slice(0, 120);
+}
+
+function portfolioRuntimeDir() {
+  return path.join(runtimeUploadsDir(), "portfolio");
+}
+
+function portfolioBundledDir() {
+  return path.join(process.cwd(), "public", "portfolio");
+}
+
+function portfolioPath(root: string, imageFile: string) {
+  const segments = String(imageFile ?? "").replace(/\\/g, "/").replace(/^\/+/, "").split("/").filter(Boolean);
+  return safeUploadPath(root, segments);
+}
+
+async function movePortfolioFile(oldImageFile: string, newImageFile: string) {
+  const targetPath = portfolioPath(portfolioRuntimeDir(), newImageFile);
+  if (!targetPath) return;
+
+  await mkdir(path.dirname(targetPath), { recursive: true });
+
+  for (const root of [portfolioRuntimeDir(), portfolioBundledDir()]) {
+    const sourcePath = portfolioPath(root, oldImageFile);
+    if (!sourcePath) continue;
+
+    try {
+      await rename(sourcePath, targetPath);
+      return;
+    } catch {
+      // Try the next possible storage root.
+    }
+  }
+}
+
+async function deletePortfolioFile(imageFile: string) {
+  for (const root of [portfolioRuntimeDir(), portfolioBundledDir()]) {
+    const filePath = portfolioPath(root, imageFile);
+    if (!filePath) continue;
+
+    try {
+      await unlink(filePath);
+    } catch {
+      // File may live in another storage root or may already be gone.
+    }
+  }
 }
 
 function serializePortfolioImage(item: PortfolioImageRow) {
@@ -112,7 +158,7 @@ export async function POST(request: NextRequest) {
     const projectName = safeFolderName(projectRows[0].project_name);
 
     // Create portfolio directory if not exists
-    const portfolioDir = path.join(process.cwd(), "public", "portfolio");
+    const portfolioDir = portfolioRuntimeDir();
     await mkdir(portfolioDir, { recursive: true });
 
     // Create project directory if not exists
@@ -187,22 +233,13 @@ export async function PATCH(request: NextRequest) {
       return NextResponse.json({ error: "Image not found" }, { status: 404 });
     }
 
-    const portfolioDir = path.join(process.cwd(), "public", "portfolio");
     const oldImageFile = String(imageRows[0].image_file ?? "").replace(/\\/g, "/").replace(/^\/+/, "");
     const fileName = path.basename(oldImageFile);
     const newProjectName = safeFolderName(projectRows[0].project_name);
     const newImageFile = `${newProjectName}/${fileName}`;
 
     if (oldImageFile && oldImageFile !== newImageFile) {
-      const oldPath = path.join(portfolioDir, oldImageFile);
-      const newProjectDir = path.join(portfolioDir, newProjectName);
-      const newPath = path.join(newProjectDir, fileName);
-      await mkdir(newProjectDir, { recursive: true });
-      try {
-        await rename(oldPath, newPath);
-      } catch (error) {
-        console.warn(`Could not move portfolio file ${oldPath} to ${newPath}:`, error);
-      }
+      await movePortfolioFile(oldImageFile, newImageFile);
     }
 
     const [result] = await pool.execute<ResultSetHeader>(
@@ -254,18 +291,9 @@ export async function DELETE(request: NextRequest) {
       return NextResponse.json({ error: "Images not found" }, { status: 404 });
     }
 
-    const portfolioDir = path.join(process.cwd(), "public", "portfolio");
-
     // Delete files and DB records
     for (const row of rows) {
-      const imageFile = row.image_file;
-      const filePath = path.join(portfolioDir, imageFile);
-      
-      try {
-        await unlink(filePath);
-      } catch (err) {
-        console.warn(`Could not delete file ${filePath}:`, err);
-      }
+      await deletePortfolioFile(String(row.image_file ?? ""));
     }
 
     // Delete from database
