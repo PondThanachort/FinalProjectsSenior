@@ -187,7 +187,7 @@ export async function GET() {
          pi.price,
          pi.quantity
        FROM purchase p
-       LEFT JOIN Purchase_item pi ON pi.purchase_id = p.purchase_id
+       LEFT JOIN purchase_item pi ON pi.purchase_id = p.purchase_id
        ORDER BY p.purchase_id DESC`
     );
 
@@ -228,7 +228,7 @@ export async function POST(request: NextRequest) {
     const purchaseId = result.insertId;
     for (const item of items) {
       await connection.execute(
-        `INSERT INTO Purchase_item (purchase_id, material_id, price, quantity)
+        `INSERT INTO purchase_item (purchase_id, material_id, price, quantity)
          VALUES (?, ?, ?, ?)`,
         [purchaseId, item.materialId, item.price, item.quantity]
       );
@@ -285,7 +285,7 @@ export async function PATCH(request: NextRequest) {
 
     await connection.beginTransaction();
     const [oldItemRows] = await connection.execute<PurchaseItemRow[]>(
-      `SELECT material_id, quantity FROM Purchase_item WHERE purchase_id = ? FOR UPDATE`,
+      `SELECT material_id, quantity FROM purchase_item WHERE purchase_id = ? FOR UPDATE`,
       [purchaseId]
     );
     const oldItems = oldItemRows.map((item) => ({
@@ -300,10 +300,10 @@ export async function PATCH(request: NextRequest) {
       [supplier, totalPrice, createdBy, purchaseId]
     );
 
-    await connection.execute(`DELETE FROM Purchase_item WHERE purchase_id = ?`, [purchaseId]);
+    await connection.execute(`DELETE FROM purchase_item WHERE purchase_id = ?`, [purchaseId]);
     for (const item of items) {
       await connection.execute(
-        `INSERT INTO Purchase_item (purchase_id, material_id, price, quantity)
+        `INSERT INTO purchase_item (purchase_id, material_id, price, quantity)
          VALUES (?, ?, ?, ?)`,
         [purchaseId, item.materialId, item.price, item.quantity]
       );
@@ -354,7 +354,7 @@ export async function DELETE(request: NextRequest) {
 
     await connection.beginTransaction();
     const [oldItemRows] = await connection.execute<PurchaseItemRow[]>(
-      `SELECT material_id, quantity FROM Purchase_item WHERE purchase_id = ? FOR UPDATE`,
+      `SELECT material_id, quantity FROM purchase_item WHERE purchase_id = ? FOR UPDATE`,
       [purchaseId]
     );
     const oldItems = oldItemRows.map((item) => ({
@@ -367,7 +367,7 @@ export async function DELETE(request: NextRequest) {
     }
     await adjustMaterialStock(connection, reverseDeltas);
 
-    await connection.execute(`DELETE FROM Purchase_item WHERE purchase_id = ?`, [purchaseId]);
+    await connection.execute(`DELETE FROM purchase_item WHERE purchase_id = ?`, [purchaseId]);
     await connection.execute(`DELETE FROM purchase WHERE purchase_id = ?`, [purchaseId]);
     await connection.commit();
 
