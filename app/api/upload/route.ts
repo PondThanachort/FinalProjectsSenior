@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { writeFile, mkdir } from "fs/promises";
 import path from "path";
 import { requireApiAuth } from "@/lib/api-auth";
+import { runtimeUploadsDir } from "@/lib/upload-storage";
 
 function safeFolderName(value: FormDataEntryValue | null) {
   const raw = typeof value === "string" ? value.trim() : "";
@@ -41,7 +42,7 @@ export async function POST(request: NextRequest) {
     }
 
     // Create uploads/project directory if not exists
-    const uploadsDir = path.join(process.cwd(), "public", "uploads");
+    const uploadsDir = runtimeUploadsDir();
     const targetDir = projectName ? path.join(uploadsDir, projectName) : uploadsDir;
     try {
       await mkdir(targetDir, { recursive: true });
