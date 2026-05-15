@@ -251,6 +251,12 @@ export async function POST(request: NextRequest) {
         return NextResponse.json({ error: "รายการนี้ปิดแล้ว ไม่สามารถคืนเพิ่มได้" }, { status: 400 });
       }
 
+      const borrowDate = dateOnly(borrow.withdraw_date);
+      if (borrowDate && returnDate < borrowDate) {
+        await connection.rollback();
+        return NextResponse.json({ error: "วันที่คืนต้องไม่ก่อนวันที่เบิก" }, { status: 400 });
+      }
+
       const borrowed = Number(borrow.withdraw_qty ?? 0);
       const returned = Number(borrow.return_qty ?? 0);
       const remaining = borrowed - returned;
@@ -330,6 +336,12 @@ export async function POST(request: NextRequest) {
       if (borrow.status === "1" || borrow.status === "2") {
         await connection.rollback();
         return NextResponse.json({ error: "รายการนี้ปิดแล้ว ไม่สามารถเปลี่ยนเป็นใช้หมดได้" }, { status: 400 });
+      }
+
+      const borrowDate = dateOnly(borrow.withdraw_date);
+      if (borrowDate && useDate < borrowDate) {
+        await connection.rollback();
+        return NextResponse.json({ error: "วันที่ใช้หมดต้องไม่ก่อนวันที่เบิก" }, { status: 400 });
       }
 
       await connection.execute(

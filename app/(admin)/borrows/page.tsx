@@ -210,7 +210,17 @@ export default function BorrowPage() {
                               <div className="act-cell">
                                 {t.status !== "คืนแล้ว" && t.status !== "ใช้หมด" && (
                                   <>
-                                    <button className="btn btn-amber btn-xs" onClick={()=>{setRForm(f=>({...f,txId:String(t.id)}));setTab("return");}}>
+                                    <button
+                                      className="btn btn-amber btn-xs"
+                                      onClick={() => {
+                                        setRForm(f => ({
+                                          ...f,
+                                          txId: String(t.id),
+                                          date: !f.date || f.date < t.date ? t.date : f.date,
+                                        }));
+                                        setTab("return");
+                                      }}
+                                    >
                                       คืน
                                     </button>
                                     <button className="btn btn-indigo btn-xs" onClick={()=>handleUseUp(t)} disabled={saving}>
@@ -384,7 +394,15 @@ export default function BorrowPage() {
                 {/* เลือกรายการเบิก */}
                 <div className="field fc">
                   <label className="fl">รายการเบิกที่ต้องการคืน <span className="req">*</span></label>
-                  <select className={`fs${rErrors.txId?" e":""}`} value={rForm.txId} onChange={e=>setRF("txId",e.target.value)}>
+                  <select
+                    className={`fs${rErrors.txId?" e":""}`}
+                    value={rForm.txId}
+                    onChange={e => {
+                      const tx = pendingTxs.find(item => String(item.id) === e.target.value);
+                      setRF("txId", e.target.value);
+                      if (tx?.date && (!rForm.date || rForm.date < tx.date)) setRF("date", tx.date);
+                    }}
+                  >
                     <option value="">-- เลือกรายการเบิก --</option>
                     {pendingTxs.map(t=>{
                       const mat = materials.find(m=>m.id===t.materialId);
@@ -445,6 +463,7 @@ export default function BorrowPage() {
                     type="date"
                     className={`fi${rErrors.date ? " e" : ""}`}
                     value={rForm.date}
+                    min={selectedTx?.date || undefined}
                     onChange={e=>setRF("date", e.target.value)}
                   />
                   {rErrors.date && <span className="err">{rErrors.date}</span>}

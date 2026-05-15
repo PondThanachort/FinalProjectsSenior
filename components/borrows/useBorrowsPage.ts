@@ -93,20 +93,19 @@ function validateBorrow(f: BorrowForm, materials: Material[]): FormErrors {
 // ── Validate return form ───────────────────────────────────────────────────────
 function validateReturn(f: ReturnForm, txs: Transaction[], materials: Material[]): FormErrors {
   const e: FormErrors = {};
+  const tx = f.txId ? txs.find(t => t.id === parseInt(f.txId)) : undefined;
   if (!f.txId)     { e.txId    = "กรุณากรอกข้อมูลให้ครบถ้วน (เลือกรายการเบิก)"; }
   if (!f.returner.trim()) { e.returner= "กรุณากรอกข้อมูลให้ครบถ้วน (ระบุผู้คืน)"; }
   if (!f.date) { e.date = "กรุณาเลือกวันที่คืน"; }
+  else if (tx?.date && f.date < tx.date) { e.date = "วันที่คืนต้องไม่ก่อนวันที่เบิก"; }
   if (!f.qty.trim()) { e.qty = "กรุณากรอกข้อมูลให้ครบถ้วน (ระบุจำนวน)"; }
   else if (!isPos(f.qty)) { e.qty = "กรุณากรอกข้อมูลให้ถูกต้องตามประเภทที่กำหนด (ตัวเลขมากกว่า 0)"; }
-  else if (f.txId) {
-    const tx = txs.find(t => t.id === parseInt(f.txId));
-    if (tx) {
-      const remaining = tx.qtyBorrow - tx.qtyReturn;
-      if (parseFloat(f.qty) > remaining) {
-        // Exception 4: คืนเกินที่เบิก
-        const mat = materials.find(m => m.id === tx.materialId);
-        e.qty = `ไม่สามารถคืนเกินจำนวนที่เบิกได้ (คืนได้อีก ${fmt(remaining)} ${mat?.unit||""})`;
-      }
+  else if (tx) {
+    const remaining = tx.qtyBorrow - tx.qtyReturn;
+    if (parseFloat(f.qty) > remaining) {
+      // Exception 4: คืนเกินที่เบิก
+      const mat = materials.find(m => m.id === tx.materialId);
+      e.qty = `ไม่สามารถคืนเกินจำนวนที่เบิกได้ (คืนได้อีก ${fmt(remaining)} ${mat?.unit||""})`;
     }
   }
   return e;
@@ -316,6 +315,22 @@ export function useBorrowsPage() {
 
   // ── Delete ────────────────────────────────────────────────────────────────────
   async function handleUseUp(tx: Transaction) {
+    const useDate = rForm.txId === String(tx.id) ? rForm.date : todayIso();
+    if (!useDate) {
+      setRErrors(e => ({ ...e, date: "กรุณาเลือกวันที่ใช้หมด" }));
+      setRGlobalErr("กรุณาเลือกวันที่ใช้หมด");
+      setRForm(f => ({ ...f, txId: String(tx.id), date: tx.date || todayIso() }));
+      setTab("return");
+      return;
+    }
+    if (tx.date && useDate < tx.date) {
+      setRErrors(e => ({ ...e, date: "วันที่ใช้หมดต้องไม่ก่อนวันที่เบิก" }));
+      setRGlobalErr("กรุณาเลือกวันที่ใช้หมดให้ไม่ก่อนวันที่เบิก");
+      setRForm(f => ({ ...f, txId: String(tx.id), date: tx.date }));
+      setTab("return");
+      return;
+    }
+
     if (!window.confirm("ยืนยันว่ารายการนี้ใช้หมดแล้ว? ระบบจะปิดรายการโดยไม่เพิ่มวัสดุกลับเข้าคลัง")) return;
 
     setSaving(true);
@@ -327,7 +342,7 @@ export function useBorrowsPage() {
         body: JSON.stringify({
           action: "use_up",
           id: tx.id,
-          date: rForm.date || todayIso(),
+          date: useDate,
         }),
       });
       const data: { borrow?: Transaction; error?: string } = await res.json();
