@@ -285,6 +285,18 @@ body { font-family: 'Sarabun', 'Noto Sans Thai', sans-serif; background: #e8e8e8
     background: #fff !important;
     overflow: hidden;
   }
+  .admin-sidebar,
+  .admin-topbar,
+  .mobile-drawer,
+  .mobile-overlay {
+    display: none !important;
+  }
+  .admin-content {
+    margin-left: 0 !important;
+    padding-top: 0 !important;
+    min-height: 0 !important;
+    background: #fff !important;
+  }
   .screen-wrap > *:not(.doc-shadow) { display: none !important; }
   .screen-wrap { padding: 0 !important; margin: 0 !important; max-width: 100% !important; }
   .doc-shadow  {
