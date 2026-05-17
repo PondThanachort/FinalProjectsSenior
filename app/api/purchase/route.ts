@@ -4,6 +4,7 @@ import path from "path";
 import type { PoolConnection, ResultSetHeader, RowDataPacket } from "mysql2/promise";
 import pool from "@/lib/mysql";
 import { requireApiAuth } from "@/lib/api-auth";
+import { runtimeUploadsDir } from "@/lib/upload-storage";
 
 type PurchaseRow = RowDataPacket & {
   purchase_id: number;
@@ -157,7 +158,7 @@ async function saveFile(file: File) {
     throw new Error("ขนาดไฟล์เกินกำหนด กรุณาอัปโหลดไฟล์ไม่เกิน 50 MB");
   }
 
-  const uploadsDir = path.join(process.cwd(), "public", "purchase");
+  const uploadsDir = path.join(runtimeUploadsDir(), "purchase");
   await mkdir(uploadsDir, { recursive: true });
 
   const safeExt = ext || (file.type === "application/pdf" ? ".pdf" : ".jpg");
