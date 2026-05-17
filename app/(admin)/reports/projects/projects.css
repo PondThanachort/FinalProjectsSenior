@@ -189,7 +189,9 @@
         }
 
         @media print {
+          .admin-sidebar, .admin-topbar, .mobile-drawer, .mobile-overlay,
           .breadcrumb, .header-actions, .toolbar, .date-filter, .modal-ft, .overlay, .gallery-lightbox { display:none !important; }
+          .admin-content { margin-left:0 !important; padding-top:0 !important; min-height:0 !important; background:#fff !important; }
           .page-wrap { background:#fff; }
           .page-inner { max-width:none; padding:0; }
           .table-wrap, .sum-card { box-shadow:none; border-color:#e5e7eb; }

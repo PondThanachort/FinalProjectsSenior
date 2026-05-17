@@ -326,14 +326,26 @@ export default function ProjectsPage() {
                 {/* วันเริ่ม */}
                 <div className="field">
                   <label className="field-label">วันที่เริ่มต้น <span className="req">*</span></label>
-                  <input type="date" className={`field-input${errors.startDate?" has-err":""}`} value={form.startDate} onChange={e=>handleField("startDate",e.target.value)}/>
+                  <input
+                    type="date"
+                    className={`field-input${errors.startDate?" has-err":""}`}
+                    value={form.startDate}
+                    max={form.endDate || undefined}
+                    onChange={e=>handleField("startDate",e.target.value)}
+                  />
                   {errors.startDate && <span className="err-msg">{errors.startDate}</span>}
                 </div>
 
                 {/* วันสิ้นสุด */}
                 <div className="field">
                   <label className="field-label">วันที่สิ้นสุด <span className="req">*</span></label>
-                  <input type="date" className={`field-input${errors.endDate?" has-err":""}`} value={form.endDate} onChange={e=>handleField("endDate",e.target.value)}/>
+                  <input
+                    type="date"
+                    className={`field-input${errors.endDate?" has-err":""}`}
+                    value={form.endDate}
+                    min={form.startDate || undefined}
+                    onChange={e=>handleField("endDate",e.target.value)}
+                  />
                   {errors.endDate && <span className="err-msg">{errors.endDate}</span>}
                 </div>
 

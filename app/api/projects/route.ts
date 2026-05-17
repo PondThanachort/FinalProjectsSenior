@@ -16,6 +16,12 @@ type ProjectRow = RowDataPacket & {
   created_by: string | null;
 };
 
+function isInvalidDateRange(startDate: unknown, endDate: unknown) {
+  const start = String(startDate ?? "").trim();
+  const end = String(endDate ?? "").trim();
+  return Boolean(start && end && end < start);
+}
+
 function serializeProject(item: ProjectRow) {
   const statusMap: Record<string, string> = {
     "1": "กำลังดำเนินการ",
@@ -87,6 +93,9 @@ export async function POST(request: Request) {
         return NextResponse.json({ error: "ข้อมูลไม่ครบถ้วน" }, { status: 400 });
       }
     }
+    if (isInvalidDateRange(data.startDate, data.endDate)) {
+      return NextResponse.json({ error: "วันที่สิ้นสุดต้องไม่ก่อนวันที่เริ่มต้น" }, { status: 400 });
+    }
 
     const [result] = await pool.execute<ResultSetHeader>(
       `INSERT INTO project (project_name, project_detail, project_image, location, start_date, end_date, status, quotation_file, created_by)
@@ -122,6 +131,9 @@ export async function PATCH(request: Request) {
 
     if (!id) {
       return NextResponse.json({ error: "ไม่ระบุ ID ของโครงการ" }, { status: 400 });
+    }
+    if (isInvalidDateRange(startDate, endDate)) {
+      return NextResponse.json({ error: "วันที่สิ้นสุดต้องไม่ก่อนวันที่เริ่มต้น" }, { status: 400 });
     }
 
     const statusMap: Record<string, string> = {

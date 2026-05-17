@@ -65,6 +65,9 @@ export function validateForm(form: Omit<Project, "id">): FormErrors {
   if (!form.location.trim())    e.location    = "กรุณากรอกที่ตั้งโครงการ";
   if (!form.startDate)          e.startDate   = "กรุณาเลือกวันที่เริ่มต้น";
   if (!form.endDate)            e.endDate     = "กรุณาเลือกวันที่สิ้นสุด";
+  if (form.startDate && form.endDate && form.endDate < form.startDate) {
+    e.endDate = "วันที่สิ้นสุดต้องไม่ก่อนวันที่เริ่มต้น";
+  }
   if (!form.staff)              e.staff       = "กรุณาเลือกผู้รับผิดชอบ";
   if (!form.quotationFile)      e.quotationFile = "กรุณาอัปโหลดใบเสนอราคา";
 
