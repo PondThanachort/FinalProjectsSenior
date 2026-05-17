@@ -421,11 +421,12 @@ export default function PurchasePage() {
                         <tr key={i}>
                           <td className="col-no">{i+1}</td>
                           <td className="col-mat">
-                            <select className="fs" style={{fontSize:12,padding:"8px 10px"}}
+                            <select className={`fs${errors[`item_material_${i}`]?" e":""}`} style={{fontSize:12,padding:"8px 10px"}}
                               value={it.material_id||""} onChange={e=>setItemF(i,"material_id",e.target.value)}>
                               <option value="">-- เลือกวัสดุ --</option>
                               {materials.map(m=><option key={m.material_id} value={m.material_id}>{m.code} · {m.name}</option>)}
                             </select>
+                            {errors[`item_material_${i}`] && <div className="err" style={{fontSize:10,marginTop:2}}>{errors[`item_material_${i}`]}</div>}
                           </td>
                           <td className="col-price">
                             <input className={`fi${errors[`item_price_${i}`]?" e":""}`}
@@ -457,6 +458,7 @@ export default function PurchasePage() {
                   </tbody>
                 </table>
               </div>
+              {errors.items && <div className="err" style={{marginTop:8}}>{errors.items}</div>}
 
               <button className="add-row" onClick={addItem}>
                 <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>

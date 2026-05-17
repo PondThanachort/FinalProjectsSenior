@@ -120,12 +120,17 @@ function validateForm(f: FormState, isEdit: boolean): FormErrors {
 
   // validate items ที่กรอก
   f.items.forEach((it, i) => {
-    if (!it.material_id) return;
+    const hasAnyItemValue = Boolean(it.material_id || it.price.trim() || it.quantity.trim());
+    if (!hasAnyItemValue) return;
+    if (!it.material_id) e[`item_material_${i}`] = "กรุณาเลือกวัสดุ/อุปกรณ์";
     if (!it.price.trim())     e[`item_price_${i}`]    = "กรุณากรอกข้อมูลให้ครบถ้วน";
     else if (!isNonNegNum(it.price)) e[`item_price_${i}`] = "กรุณากรอกข้อมูลให้ถูกต้องตามประเภทที่กำหนด (ตัวเลข)";
     if (!it.quantity.trim())  e[`item_qty_${i}`]      = "กรุณากรอกข้อมูลให้ครบถ้วน";
     else if (!isPosInt(it.quantity)) e[`item_qty_${i}`] = "กรุณากรอกข้อมูลให้ถูกต้องตามประเภทที่กำหนด (จำนวนเต็ม > 0)";
   });
+  if (!f.items.some(it => it.material_id && it.price.trim() && it.quantity.trim())) {
+    e.items = "กรุณาเพิ่มรายการวัสดุ/อุปกรณ์อย่างน้อย 1 รายการ";
+  }
 
   return e;
 }
@@ -249,7 +254,7 @@ export function usePurchasePage() {
   // ── Item helpers ──────────────────────────────────────────────────────────────
   function setItemF(i: number, k: keyof PurchaseItem, v: string | number) {
     setForm(f => { const items=[...f.items]; items[i]={...items[i],[k]:v}; return {...f,items}; });
-    const eKeys = [`item_price_${i}`,`item_qty_${i}`];
+    const eKeys = [`item_material_${i}`, `item_price_${i}`, `item_qty_${i}`, "items"];
     eKeys.forEach(ek => { if (errors[ek]) setErrors(e=>{const n={...e};delete n[ek];return n;}); });
     setGlobalErr("");
   }

@@ -216,6 +216,9 @@ export async function POST(request: NextRequest) {
     if (!file || !supplier || !createdBy || totalPrice === null) {
       return NextResponse.json({ error: "ข้อมูลไม่ครบถ้วน" }, { status: 400 });
     }
+    if (items.length === 0) {
+      return NextResponse.json({ error: "กรุณาเพิ่มรายการวัสดุ/อุปกรณ์อย่างน้อย 1 รายการ" }, { status: 400 });
+    }
 
     const savedFileName = await saveFile(file);
 
@@ -282,6 +285,9 @@ export async function PATCH(request: NextRequest) {
 
     if (!purchaseId || !supplier || !createdBy || totalPrice === null) {
       return NextResponse.json({ error: "ข้อมูลไม่ครบถ้วน" }, { status: 400 });
+    }
+    if (items.length === 0) {
+      return NextResponse.json({ error: "กรุณาเพิ่มรายการวัสดุ/อุปกรณ์อย่างน้อย 1 รายการ" }, { status: 400 });
     }
 
     await connection.beginTransaction();
